@@ -1,9 +1,16 @@
-FROM ubuntu:22.04
+# GoLang Image
+FROM golang:1.20-alpine
 
-RUN apt-get update && apt-get install -y python3 python3-pip
+# Verzeichnis setzen
+WORKDIR /app
 
-RUN pip install flask
+COPY . .
 
-COPY app.py /app/app.py
+# Build Application/Dependencies
+RUN go mod tidy && go build -o stock-publisher
 
-CMD FLASK_APP=/app/app.py flask run --host=0.0.0.0 --port=8080
+# Port-Mapping
+EXPOSE 8080
+
+# Start
+CMD ["./stock-publisher"]
