@@ -1,6 +1,60 @@
 services:
   stock-publisher:
     build:
-      context: .
+      context: ./stock-publisher
+    container_name: stock-publisher
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
     ports:
       - "8080:8080" #Mapping
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672" # Port für die Verbindung von Producer und Consumer
+      - "15672:15672" # Port für das Management-Interface
+    environment:
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_PASS: password
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq   
+
+  consumer-aapl:
+    build:
+      context: ./consumer-aapl
+    container_name: consumer-aapl
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - QUEUE_NAME=AAPL
+
+  consumer-msft:
+    build:
+      context: ./consumer-msft
+    container_name: consumer-msft
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - QUEUE_NAME=MSFT
+
+  consumer-tsla:
+    build:
+      context: ./consumer-tsla
+    container_name: consumer-tsla
+    depends_on:
+      - rabbitmq
+    environment:
+      - RABBITMQ_HOST=rabbitmq
+      - RABBITMQ_PORT=5672
+      - QUEUE_NAME=TSLA
+
+volumes:
+  rabbitmq_data:
