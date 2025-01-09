@@ -1,13 +1,12 @@
 services:
   stock-publisher:
-    build:
-      context: ./stock-publisher
+    restart: always
+    image: janik1998/microservices_mr_ju-stock-publisher
     container_name: stock-publisher
     depends_on:
       - rabbitmq
     environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
+      - RABBITMQ_URL=amqp://stockmarket:supersecret123@rabbitmq:5672/
     ports:
       - "8080:8080" #Mapping
 
@@ -18,8 +17,8 @@ services:
       - "5672:5672" # Port für die Verbindung von Producer und Consumer
       - "15672:15672" # Port für das Management-Interface
     environment:
-      RABBITMQ_DEFAULT_USER: user
-      RABBITMQ_DEFAULT_PASS: password
+      RABBITMQ_DEFAULT_USER: stockmarket
+      RABBITMQ_DEFAULT_PASS: supersecret123
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq   
 
