@@ -26,15 +26,47 @@ services:
     image: mongo:7.0
     ports:
       - 27017:27017
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27017"]    
+    extra_hosts: 
+        - "host.docker.internal:host-gateway" 
+    healthcheck: 
+      test: echo "try { rs.status() } catch (err) {rs.initiate({_id:'rs0',members:[{_id:0,host:'host.docker.internal:27017',priority:1},{_id:1,host:'host.docker.internal:27018',priority:0.5},{_id:2,host:'host.docker.internal:27019',priority:0.5}]}) }" | mongosh --port 27017 --quiet 
+      interval: 5s 
+      timeout: 30s 
+      start_period: 0s 
+      start_interval: 1s 
+      retries: 30
+    volumes: 
+      - "stockmarket1_data:/data/db" 
+      - "stockmarket1_config:/data/configdb" 
+    
   stockmarket2: 
     image: mongo:7.0 
     ports: 
-      - 27018:27018 
+      - 27018:27018
+    extra_hosts: 
+      - "host.docker.internal:host-gateway" 
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27018"] 
+    volumes: 
+      - "stockmarket2_data:/data/db" 
+      - "stockmarket2_config:/data/configdb" 
+
   stockmarket3: 
     image: mongo:7.0 
     ports: 
       - 27019:27019   
+    extra_hosts: 
+        - "host.docker.internal:host-gateway" 
+    command: ["--replSet", "rs0", "--bind_ip_all", "--port", "27019"]
+    volumes: 
+      - "stockmarket3_data:/data/db" 
+      - "stockmarket3_config:/data/configdb"  
 
 volumes:
-  rabbitmq_data:
+  stockmarket1_data: 
+  stockmarket2_data: 
+  stockmarket3_data: 
+  stockmarket1_config: 
+  stockmarket2_config: 
+  stockmarket3_config: 
 
