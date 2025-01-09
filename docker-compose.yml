@@ -23,38 +23,5 @@ services:
     volumes:
       - rabbitmq_data:/var/lib/rabbitmq   
 
-  consumer-aapl:
-    build:
-      context: ./consumer-aapl
-    container_name: consumer-aapl
-    depends_on:
-      - rabbitmq
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - QUEUE_NAME=AAPL
-
-  consumer-msft:
-    build:
-      context: ./consumer-msft
-    container_name: consumer-msft
-    depends_on:
-      - rabbitmq
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - QUEUE_NAME=MSFT
-
-  consumer-tsla:
-    build:
-      context: ./consumer-tsla
-    container_name: consumer-tsla
-    depends_on:
-      - rabbitmq
-    environment:
-      - RABBITMQ_HOST=rabbitmq
-      - RABBITMQ_PORT=5672
-      - QUEUE_NAME=TSLA
-
 volumes:
   rabbitmq_data:
