@@ -20,7 +20,21 @@ services:
       RABBITMQ_DEFAULT_USER: stockmarket
       RABBITMQ_DEFAULT_PASS: supersecret123
     volumes:
-      - rabbitmq_data:/var/lib/rabbitmq   
+      - rabbitmq_data:/var/lib/rabbitmq 
+      
+  stockmarket1:
+    image: mongo:7.0
+    ports:
+      - 27017:27017
+  stockmarket2: 
+    image: mongo:7.0 
+    ports: 
+      - 27018:27018 
+  stockmarket3: 
+    image: mongo:7.0 
+    ports: 
+      - 27019:27019   
 
 volumes:
   rabbitmq_data:
+
