@@ -86,7 +86,6 @@ services:
 
 volumes:
   rabbitmq_data:
-  rabbitmq_data:
   stockmarket1_data: 
   stockmarket2_data: 
   stockmarket3_data: 
