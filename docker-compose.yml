@@ -72,6 +72,10 @@ services:
       - stockmarket3
     environment:
       - MONGO_URI=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+    networks:
+      - frontend-networks
+    ports:
+      - "8081:80"
 
   stock-liveview-master2:
     restart: always
@@ -83,6 +87,10 @@ services:
       - stockmarket3
     environment:
       - MONGO_URI=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+    networks:
+      - frontend-networks
+    ports:
+      - "8082:80"
 
   nginx-loadbalancer:
     image: nginx:latest
@@ -94,6 +102,8 @@ services:
     depends_on:
       - stock-liveview-master1
       - stock-liveview-master2
+    networks:
+      - frontend-networks
       
 volumes:
   rabbitmq_data:
@@ -104,3 +114,6 @@ volumes:
   stockmarket2_config: 
   stockmarket3_config: 
 
+networks:
+  frontend-networks:
+    driver: bridge
