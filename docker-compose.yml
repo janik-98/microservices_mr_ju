@@ -62,7 +62,19 @@ services:
       - "stockmarket3_data:/data/db" 
       - "stockmarket3_config:/data/configdb"  
 
+  stock-liveview-master:
+    restart: always
+    image: janik1998/stock-liveview-master:1.0
+    container_name: stock-liveview-master
+    depends_on:
+      - stockmarket1
+      - stockmarket2
+      - stockmarket3
+    environment:
+      - MONGO_URI=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+
 volumes:
+  rabbitmq_data:
   stockmarket1_data: 
   stockmarket2_data: 
   stockmarket3_data: 
