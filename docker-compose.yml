@@ -83,8 +83,6 @@ services:
       - stockmarket3
     environment:
       - MONGODB_URL=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
-    ports:
-      - 3200:3000
 
   nginx-loadbalancer:
     image: nginx:latest
@@ -96,6 +94,45 @@ services:
     depends_on:
       - stock-liveview-master1
       - stock-liveview-master2
+
+  consumer-aapl:
+    restart: always
+    image: janik1998/consumer:latest
+    environment:
+      - RABBITMQ_URL=amqp://stockmarket:supersecret123@rabbitmq:5672/
+      - MONGODB_URL=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+      - QUEUE_NAME=AAPL
+    depends_on:
+      - rabbitmq
+      - stockmarket1
+      - stockmarket2
+      - stockmarket3
+
+  consumer-msft:
+    restart: always
+    image: janik1998/consumer:latest
+    environment:
+      - RABBITMQ_URL=amqp://stockmarket:supersecret123@rabbitmq:5672/
+      - MONGODB_URL=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+      - QUEUE_NAME=MSFT
+    depends_on:
+      - rabbitmq
+      - stockmarket1
+      - stockmarket2
+      - stockmarket3
+
+  consumer-tsla:
+    restart: always
+    image: janik1998/consumer:latest
+    environment:
+      - RABBITMQ_URL=amqp://stockmarket:supersecret123@rabbitmq:5672/
+      - MONGODB_URL=mongodb://stockmarket1:27017,stockmarket2:27018,stockmarket3:27019/mydatabase?replicaSet=rs0
+      - QUEUE_NAME=TSLA
+    depends_on:
+      - rabbitmq
+      - stockmarket1
+      - stockmarket2
+      - stockmarket3
       
 volumes:
   rabbitmq_data:
